@@ -1,6 +1,6 @@
 import praw
 import pprint
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import time
 import gfycat.gfycat
 import traceback
@@ -22,7 +22,7 @@ oauth_helper = PrawOAuth2Mini(reddit, app_key=s.app_key,
 def process_sub(reddit,subreddit_name):
 	global nothing_to_do
 	if debug:
-		print("Now running on: " + subreddit_name)
+		print(("Now running on: " + subreddit_name))
 	#number_of_posts needs to be adjusted for subreddits with more postings per minute. Do so in settings.py
 	submission_generator = reddit.get_subreddit(subreddit_name).get_new(limit=s.number_of_posts)
 	for submission in submission_generator:
@@ -32,13 +32,13 @@ def process_sub(reddit,subreddit_name):
 		#TODO: dont keep post IDs on file forever, maybe only the last 50?	
 		if post_id in processed_file.read():
 			if debug:
-				print(post_id + ": Already processed")
+				print((post_id + ": Already processed"))
 			processed_file.close()
 			continue
 		url = vars(submission)['url']
 		permalink = vars(submission)['permalink']
 		if debug:
-			print(pprint.pprint(vars(submission)))
+			print((pprint.pprint(vars(submission))))
 		extension = url[len(url)-3:]
 		#if the post is a gif, lets process it
 		if(extension == "gif"):
@@ -49,22 +49,22 @@ def process_sub(reddit,subreddit_name):
 				#successfully processed post, add ID to file
 				with open(s.processed_file, "a") as processed:
 					processed.write(post_id + "\n")
-				print(prefix() + "Processed: " + post_id + " on " + subreddit_name)
+				print((prefix() + "Processed: " + post_id + " on " + subreddit_name))
 				nothing_to_do = False
 			except Exception as e:
-				print(prefix() + post_id + ": Error, skipping...")
+				print((prefix() + post_id + ": Error, skipping..."))
 				if debug:
 					traceback.print_exc()
 				continue
 		else:
 			if debug:
-				print(post_id + ": is not a GIF")
+				print((post_id + ": is not a GIF"))
 			continue
 		time.sleep(s.sleep_time)
 
 def create_comment(upload):
 	if debug:
-		print(upload.formated()) 
+		print((upload.formated())) 
 	gifv = "http://gfycat.com/" + upload.get("gfyName")
 	gif_size_formatted = upload.get("gifSize") / 1000000.0
 	gfy_size_formatted = upload.get("gfysize") / 1000000.0
@@ -96,11 +96,11 @@ def mainloop():
 		for sub in subreddits:
 			process_sub(reddit,sub)
 		if(nothing_to_do):
-			print(prefix() + "Nothing to do")
+			print((prefix() + "Nothing to do"))
 		else:
-			print(prefix() + "Completed successfully")
+			print((prefix() + "Completed successfully"))
 	except praw.errors.OAuthInvalidToken:
-		print(prefix() + "Error at the login level, refreshing tokens.")
+		print((prefix() + "Error at the login level, refreshing tokens."))
 		print()
 		oauth_helper.refresh()
 		mainloop()

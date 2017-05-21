@@ -1,7 +1,7 @@
 
 import praw
 import pprint
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from imgurpython import ImgurClient
 import time
 
@@ -37,7 +37,7 @@ for submission in submission_generator:
 			#print("gifv version: " + gifv)
 			v_fixed.append([url,gifv])
 			submission.add_comment('Here is a blazing fast gifv version! ' + gifv)
-			print("Title: " + title + "\nPermalink: " + permalink + "\nURL: " + url + "\ngifv: " + gifv)
+			print(("Title: " + title + "\nPermalink: " + permalink + "\nURL: " + url + "\ngifv: " + gifv))
 			with open("processed.txt", "a") as test:
 				test.write(post_id + "\n")
 		except:
